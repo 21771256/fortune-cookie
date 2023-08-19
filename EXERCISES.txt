@@ -1,0 +1,109 @@
+*EX1*
+
+C:\Users\User>docker create hello-world
+68e439240d468834ab2d0eefd4e9b03d52b88086a4a55bbe16b74b68d543bb42
+
+C:\Users\User>docker ps --all
+CONTAINER ID   IMAGE         COMMAND    CREATED              STATUS    PORTS     NAMES
+68e439240d46   hello-world   "/hello"   About a minute ago   Created             hardcore_visvesvaraya
+
+C:\Users\User>docker rm 68e439240d46
+68e439240d46
+
+C:\Users\User>docker ps --all
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+Ans: Reported name field is hardcore_visvesvaraya
+Ans: removing container using its ID rather than its name works
+
+
+
+
+*EX2*
+C:\Users\User\Documents\Labs\Lab02>nslookup amazon.com
+Server:  umbrella-forwarder-2.latrobe.edu.au
+Address:  10.128.8.21
+
+DNS request timed out.
+    timeout was 2 seconds.
+Non-authoritative answer:
+Name:    amazon.com
+Addresses:  54.239.28.85
+          205.251.242.103
+          52.94.236.248
+Amazon uses multiple IP addresses for load balancing and redundancy purposes.
+
+As for why a big company like Amazon may have multiple IP addresses, there are a few reasons:
+
+Load balancing: Amazon.com receives a massive amount of traffic, and distributing that traffic across multiple servers helps in load balancing. 
+By having multiple IP addresses, Amazon can distribute incoming requests to different servers to ensure optimal performance and avoid overwhelming any single server.
+
+Redundancy and fault tolerance: By using multiple IP addresses, Amazon can have redundant server infrastructure. 
+If one server or IP address becomes unavailable, the traffic can be automatically routed to another available server, ensuring the website remains accessible.
+
+Geographic distribution: Amazon has data centers and server infrastructure located in multiple regions worldwide. By using multiple IP addresses, 
+they can direct users to the closest or most optimal server based on their geographic location, improving response times and user experience.
+
+These practices allow Amazon to handle the high volume of traffic and provide a reliable and scalable infrastructure for their services.
+
+
+
+
+*EX3*
+PS C:\Users\User\CloudLab\Lab02\fortune-cookie> docker run -p 80:3000 fortune-cookie
+
+> fortune-cookie@1.0.0 start
+> node server.js
+
+Server started
+
+I can then access the web application in the web browser by http://localhost/
+
+
+
+*EX4*
+server.js code below
+const express = require('express');
+const child_process = require('child_process');
+
+// Create a new Express web application
+const app = express();
+
+// Set handler for the index of the website
+app.get('/', (req, res) => {
+    // Adding date for ex4
+    var currentDate = new Date().toLocaleString(); // Get current date and time as a string
+    // Run the system `fortune` command and respond with the message
+    child_process.exec('fortune', (error, message) => {
+        if(error === null) {
+            res.send(message + '<br>' +currentDate);
+        } else {
+            res.send('Error: ' + error);
+        }
+    })
+}); 
+
+// Start web application server
+app.listen(3000, () => {
+    console.log('Server started');
+});
+
+
+
+*EX5*
+docker-compose.yml:
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/app"
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      - TZ=Australia/Melbourne
+
+I have to add the environment part, or the time is not changing just by
+- "/etc/localtime:/etc/localtime:ro" in volumes (in lab pdf)
+Also, the (AEST) is not displayed for Date() either.
