@@ -9,6 +9,10 @@ RUN apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
 
 
+# Install Fortune (after ex3).
+RUN apk add --no-cache fortune
+
+
 # Create a working directory for our application.
 RUN mkdir -p /app
 WORKDIR /app
